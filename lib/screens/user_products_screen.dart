@@ -1,0 +1,49 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_application_007/providers/products.dart';
+import 'package:flutter_application_007/screens/edit_product_screen.dart';
+import 'package:flutter_application_007/widgets/app_drawer.dart';
+import 'package:flutter_application_007/widgets/user_product_item.dart';
+import 'package:provider/provider.dart';
+
+class UserProductsScreen extends StatelessWidget {
+  // const UserProductsScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: AppDrawer(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  'EditProductScreen',
+                );
+              },
+              icon: Icon(Icons.add))
+        ],
+        title: Text('Your Products'),
+      ),
+      body: Consumer<Products>(builder: (context, products, child) {
+        return ListView.builder(
+          itemCount: products.items.length,
+          itemBuilder: (context, index) => Column(
+            children: [
+              Card(
+                child: UserProductItem(
+                    id: products.items[index].id ?? '',
+                    title: products.items[index].title,
+                    imageUrl: products.items[index].imageUrl),
+              ),
+              Divider(),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+}

@@ -25,6 +25,34 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   bool _showOnlyFavorite = false;
+  var _isInit = true;
+  var _isLoading = false;
+  @override
+  void initState() {
+    // Provider.of<Products>(context).fetchAndSetProducts(); //.of(contex) wont work in initstate
+    // Future.delayed(Duration.zero).then((_) {
+    //   Provider.of<Products>(context).fetchAndSetProducts();
+    // });
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // we will not async with @overide method so will use .the
+    // TODO: implement didChangeDependencies
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      }); //set will reflect it in ui otherwise only property will change to true
+      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      }); // then will triggred when we are done with fetching
+    }
+    _isInit = false; //runs onces as page loaded
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +115,12 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       ),
       body: Column(
         children: [
-          Expanded(child: ProductsGrid(_showOnlyFavorite)),
+          Expanded(
+              child: _isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ProductsGrid(_showOnlyFavorite)),
 
           // Container(
           //   padding: EdgeInsets.all(10),

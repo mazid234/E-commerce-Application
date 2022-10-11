@@ -52,11 +52,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      final productId = ModalRoute.of(context)!.settings.arguments as String;
-      print("PassedId:${productId}");
+      final productId = ModalRoute.of(context)!.settings.arguments;
+      // print("PassedId:${productId}");
       if (productId != null) {
-        _editedProduct =
-            Provider.of<Products>(context, listen: false).findById(productId);
+        _editedProduct = Provider.of<Products>(context, listen: false)
+            .findById(productId.toString());
         _initValues = {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
@@ -77,7 +77,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   //   }
   // }
 
-  void _saveForm() {
+  Future _saveForm() async {
     final isValid = _form.currentState!.validate();
 
     if (!isValid) {
@@ -98,20 +98,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
       });
       Navigator.of(context).pop();
     } else {
-      // print('hello everyone');
-      Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct)
-          .then((_) {
-        setState(() {
-          print('thennnnn');
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
-      }).catchError((error) {
-        print("errorstate");
-        //now we can use error in widget
-        //with return next .then will be executed onces showDialog is done
-        showDialog(
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text("An Error Occured"),
@@ -125,13 +116,23 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     _isLoading = false;
                   });
                   Navigator.of(ctx).pop();
-                  Navigator.of(ctx).pop();
+                  // Navigator.of(ctx).pop();
                 },
               )
             ],
           ),
         );
-      });
+      } finally {
+        setState(() {
+          // print('thennnnn');
+          _isLoading = false;
+        });
+        Navigator.of(context).pop();
+      }
+
+      //now we can use error in widget
+      //with return next .then will be executed onces showDialog is done
+
     }
 
     // print(_editedProduct.id);
@@ -156,7 +157,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Product'),
+        title: Text(_editedProduct.id != null ? 'Edit Product' : "Add Product"),
         actions: [
           IconButton(
             icon: Icon(Icons.save),

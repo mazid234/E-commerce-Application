@@ -8,7 +8,9 @@ import 'package:flutter_application_007/screens/more_screen.dart';
 import 'package:flutter_application_007/screens/orders_screen.dart';
 import 'package:flutter_application_007/widgets/app_drawer.dart';
 import 'package:flutter_application_007/widgets/badge.dart';
+import 'package:flutter_application_007/widgets/shimmer_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import '../constants/constants.dart';
 import '../providers/cart.dart';
 import '../widgets/products_grid.dart';
@@ -117,8 +119,15 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         children: [
           Expanded(
               child: _isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
+                  ? GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.2 / 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: 4,
+                      itemBuilder: (context, index) => buildFoodShimmer(),
                     )
                   : ProductsGrid(_showOnlyFavorite)),
 
@@ -141,4 +150,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       ),
     );
   }
+
+  Widget buildFoodShimmer() => GridTile(
+        child: ShimmerWidget.rectangular(width: 20, height: 50),
+      );
 }

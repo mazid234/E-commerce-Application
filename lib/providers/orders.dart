@@ -25,6 +25,41 @@ class Orders with ChangeNotifier {
     // as it will return a copy of address where order are stored, wecant edit orders outside this class
   }
 
+  Future<void> fetchAndSetOrders() async {
+    final url = Uri.https(
+        'flutter-update-1eb33-default-rtdb.firebaseio.com', '/orders.json');
+    final response = await http.get(url);
+    final List<OrderItem> loadedOrders = [];
+    final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
+    if (extractedData == {}) {
+      return;
+    }
+    //agey ka code nhi chlega
+    extractedData.forEach((orderId, orderData) {
+      loadedOrders.add(
+        OrderItem(
+          id: orderId,
+          amount: orderData['amount'],
+          dateTime: DateTime.parse(
+            orderData['dateTime'],
+          ),
+          products: (orderData['products'] as List<dynamic>).map((item) {
+            return CartItem(
+              id: item['id'],
+              title: item['title'],
+              price: item['price'],
+              quantity: item['quantity'],
+            );
+          }
+              // print("success");
+              ).toList(),
+        ),
+      );
+    });
+    _order = loadedOrders.reversed.toList();
+    notifyListeners();
+  }
+
 // add all the content of the cart into one order
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final url = Uri.https(

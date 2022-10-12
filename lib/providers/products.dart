@@ -111,6 +111,9 @@ class Products with ChangeNotifier {
     try {
       final response = await http.get(url);
       final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
+      if (extractedData == {}) {
+        return;
+      }
       final List<Product> loadedProducts = [];
       // as extractedData is a map we can use foreach method
       //key=> unique id by firebase, value=> another map of product details

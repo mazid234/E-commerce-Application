@@ -16,16 +16,20 @@ class ProductDetailScreen extends StatelessWidget {
       appBar: AppBar(title: Text(loadedProducts.title)),
       body: SingleChildScrollView(
         child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Container(
-              height: 400,
-              width: double.infinity,
-              child: Image.network(
-                loadedProducts.imageUrl,
-                fit: BoxFit.fitWidth,
+            Card(
+              elevation: 10,
+              child: SizedBox(
+                height: 400,
+                width: double.infinity,
+                child: Image.network(
+                  loadedProducts.imageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text(

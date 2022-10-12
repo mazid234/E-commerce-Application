@@ -62,7 +62,7 @@ class _ProductItemState extends State<ProductItem> {
                           decoration: new BoxDecoration(
                               shape: BoxShape.circle,
                               image: new DecorationImage(
-                                  fit: BoxFit.contain,
+                                  fit: BoxFit.cover,
                                   image: NetworkImage(
                                     product.imageUrl,
                                   )))),

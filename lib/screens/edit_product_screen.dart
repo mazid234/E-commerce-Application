@@ -91,7 +91,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // print('savefrom Id ${_editedProduct.id}');
     if (_editedProduct.id != null) {
       // print("if is already runnig");
-      Provider.of<Products>(context, listen: false)
+      await Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct.id ?? '', _editedProduct);
       setState(() {
         _isLoading = false;
@@ -129,10 +129,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
         });
         Navigator.of(context).pop();
       }
+      // setState(() {
+      //   _isLoading = false;
+      // });
+      // Navigator.of(context).pop();
 
       //now we can use error in widget
       //with return next .then will be executed onces showDialog is done
-
     }
 
     // print(_editedProduct.id);

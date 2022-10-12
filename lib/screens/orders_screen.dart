@@ -27,22 +27,24 @@ class OrdersScreen extends StatelessWidget {
           //     },
           //     child: Icon(Icons.arrow_back)),
         ),
-        body: Column(
-          children: [
-            // SizedBox(
-            //   height: 60,
-            // ),
-            Consumer<Orders>(
-              builder: (context, orderData, child) {
-                return ListView.builder(
-                    itemCount: orderData.order.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) => OrderItem(
-                          orderData.order[index],
-                        ));
-              },
-            ),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // SizedBox(
+              //   height: 60,
+              // ),
+              Consumer<Orders>(
+                builder: (context, orderData, child) {
+                  return ListView.builder(
+                      itemCount: orderData.order.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) => OrderItem(
+                            orderData.order[index],
+                          ));
+                },
+              ),
+            ],
+          ),
         ));
   }
 }

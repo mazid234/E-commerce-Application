@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_007/constants/constants.dart';
 import 'package:flutter_application_007/providers/cart.dart';
 import 'package:flutter_application_007/providers/product.dart';
+import 'package:flutter_application_007/providers/products.dart';
 import 'package:flutter_application_007/screens/product_detail_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';

@@ -11,6 +11,10 @@ import 'package:provider/provider.dart';
 class UserProductsScreen extends StatelessWidget {
   // const UserProductsScreen({Key? key}) : super(key: key);
 
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,22 +32,27 @@ class UserProductsScreen extends StatelessWidget {
         ],
         title: Text('Your Products'),
       ),
-      body: Consumer<Products>(builder: (context, products, child) {
-        return ListView.builder(
-          itemCount: products.items.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              Card(
-                child: UserProductItem(
-                    id: products.items[index].id ?? '',
-                    title: products.items[index].title,
-                    imageUrl: products.items[index].imageUrl),
-              ),
-              Divider(),
-            ],
-          ),
-        );
-      }),
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        child: Consumer<Products>(builder: (context, products, child) {
+          return ListView.builder(
+            itemCount: products.items.length,
+            itemBuilder: (context, index) => Column(
+              children: [
+                Card(
+                  margin:
+                      EdgeInsets.only(bottom: 5, top: 10, left: 5, right: 5),
+                  child: UserProductItem(
+                      id: products.items[index].id ?? '',
+                      title: products.items[index].title,
+                      imageUrl: products.items[index].imageUrl),
+                ),
+                // Divider(),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 }

@@ -5,6 +5,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_application_007/providers/products.dart';
 import 'package:flutter_application_007/screens/edit_product_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -43,14 +45,17 @@ class UserProductItem extends StatelessWidget {
                     Alert(
                   context: context,
                   // type: AlertType.success,
-                  title: "ALERT",
+                  title: "ALERT !",
+                  style: AlertStyle(
+                      titleStyle: TextStyle(fontSize: 16),
+                      descStyle: TextStyle(fontSize: 16)),
 
                   desc: "Do you really want to delete the item!.",
                   buttons: [
                     DialogButton(
                       child: Text(
                         "Cancel",
-                        style: TextStyle(color: Colors.red, fontSize: 20),
+                        style: TextStyle(color: Colors.red, fontSize: 16),
                       ),
                       onPressed: () {
                         Navigator.pop(context);
@@ -62,12 +67,23 @@ class UserProductItem extends StatelessWidget {
                     DialogButton(
                       child: Text(
                         "Delete",
-                        style: TextStyle(color: Colors.red, fontSize: 20),
+                        style: TextStyle(color: Colors.red, fontSize: 16),
                       ),
-                      onPressed: () {
-                        prod.deleteProduct(id);
-
+                      onPressed: () async {
                         Navigator.pop(context);
+
+                        try {
+                          await prod.deleteProduct(id);
+                        } catch (error) {
+                          Fluttertoast.showToast(
+                              msg: "Deleting Failed !! \n${error}",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              // backgroundColor: Colors.red,
+                              // textColor: Colors.white,
+                              fontSize: 14.0);
+                        }
                       },
                       color: (Color.fromARGB(255, 255, 255, 255)),
 

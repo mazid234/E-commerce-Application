@@ -4,6 +4,7 @@ import 'package:flutter_application_007/providers/cart.dart' show Cart;
 import 'package:flutter_application_007/providers/orders.dart';
 import 'package:flutter_application_007/widgets/cart_item.dart';
 import 'package:provider/provider.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class CartScreen extends StatelessWidget {
   // static const routeName = '/cart';
@@ -12,42 +13,39 @@ class CartScreen extends StatelessWidget {
     return Consumer<Cart>(
       builder: (context, cart, child) => Scaffold(
         appBar: AppBar(
-          title: Text("Cart Items"),
+          title: const Text("Cart Items"),
         ),
         body: Column(children: [
           // SizedBox(
           //   height: 60,
           // ),
           Card(
-            margin: EdgeInsets.all(15),
+            margin: const EdgeInsets.all(15),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Total Amount",
                     style: TextStyle(
                       fontSize: 16,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Chip(
                     label: Text(
                       "\$${cart.totalAmount?.toStringAsFixed(2)}",
                     ),
                     backgroundColor: colorPrimarylight,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Provider.of<Orders>(context, listen: false).addOrder(
-                            cart.items.values.toList(), cart.totalAmount ?? 0);
-                        cart.clear();
-                      },
-                      child: Text('Place Order'))
+                  //when we point onpressed to null it automatically disable
+                  OrderButton(
+                    cart: cart,
+                  )
                 ],
               ),
             ),
@@ -72,5 +70,54 @@ class CartScreen extends StatelessWidget {
         ]),
       ),
     );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key? key,
+    required this.cart,
+  }) : super(key: key);
+  final Cart cart;
+
+  @override
+  State<OrderButton> createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return _isLoading
+        ? CircularStepProgressIndicator(
+            circularDirection: CircularDirection.clockwise,
+            totalSteps: 100,
+            currentStep: 50,
+            // startingAngle: 0,
+            stepSize: 5,
+            selectedColor: Colors.greenAccent,
+            unselectedColor: Colors.grey[200],
+            padding: 0,
+            width: 30,
+            height: 30,
+            selectedStepSize: 5,
+            roundedCap: (_, __) => true,
+          )
+        : ElevatedButton(
+            onPressed: (widget.cart.totalAmount! <= 0 || _isLoading)
+                ? null
+                : () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    await Provider.of<Orders>(context, listen: false).addOrder(
+                        widget.cart.items.values.toList(),
+                        widget.cart.totalAmount ?? 0);
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    widget.cart.clear();
+                  },
+            child: const Text('Place Order'));
   }
 }

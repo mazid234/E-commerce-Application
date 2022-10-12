@@ -24,7 +24,7 @@ class _OrderItemState extends State<OrderItem> {
       margin: EdgeInsets.all(10),
       child: Column(children: [
         ListTile(
-          title: Text('\$${widget.order.amount.toStringAsFixed(2)}'),
+          title: Text('Total:  \$${widget.order.amount.toStringAsFixed(2)}'),
           subtitle: (Text(
             DateFormat('dd-MM-yyyy hh:mm').format(widget.order.dateTime),
           )),
@@ -41,27 +41,35 @@ class _OrderItemState extends State<OrderItem> {
         if (_expanded)
           Container(
             padding: EdgeInsets.all(10),
-            height: min(widget.order.products.length * 20.0 + 50, 150),
+            height: min(widget.order.products.length * 20.0 + 30, 150),
             child: ListView(
                 children: widget.order.products
                     .map(
-                      (prod) => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            prod.title,
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                      (prod) => Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                prod.title,
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '${prod.quantity}x \$${prod.price}',
+                                style:
+                                    TextStyle(fontSize: 18, color: Colors.grey),
+                              )
+                            ],
                           ),
-                          Text(
-                            '${prod.quantity}x \$${prod.price}',
-                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          SizedBox(
+                            height: 6,
                           )
                         ],
                       ),
                     )
                     .toList()),
-          )
+          ),
       ]),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_application_007/model/http_exception.dart';
 import 'package:http/http.dart' as http;
 
 import 'product.dart';
@@ -111,6 +112,8 @@ class Products with ChangeNotifier {
       final response = await http.get(url);
       final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
+      // as extractedData is a map we can use foreach method
+      //key=> unique id by firebase, value=> another map of product details
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
             id: prodId,
@@ -161,13 +164,21 @@ class Products with ChangeNotifier {
       print("EEERRROOORRRR:${error}");
       throw error; // this error will now thrown from where this addproduct method is called eg ediproductscreen
       // THEN CODE WILL BE SKIPPED IF ERROR WAS THROWN AT POST CODE
-
     }
   }
 
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
+      final url = Uri.https('flutter-update-1eb33-default-rtdb.firebaseio.com',
+          '/products/$id.json');
+      await http.patch(url,
+          body: jsonEncode({
+            'title': newProduct.title,
+            'descrition': newProduct.description,
+            'imageUrl': newProduct.imageUrl,
+            'price': newProduct.price,
+          }));
       _items[prodIndex] = newProduct;
       notifyListeners();
     } else {
@@ -175,12 +186,25 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     // final prodIndex = _items.indexWhere((prod) => prod.id == id);
-    _items.removeWhere((prod) => prod.id == id);
+
+    final url = Uri.https('flutter-update-1eb33-default-rtdb.firebaseio.com',
+        '/products/$id.json');
+    final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
+    Product? existingProduct = _items[existingProductIndex];
+    _items.removeAt(existingProductIndex);
+    notifyListeners();
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+      throw HttpException('Could not delete product');
+    }
+    existingProduct = null; // memory se hta dega dart
+
     // if (prodIndex >= 0) {
     //   _items.removeAt(prodIndex);
-    notifyListeners();
     // } else {
     //   print('...');
     // }

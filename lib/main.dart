@@ -11,7 +11,7 @@ import 'package:flutter_application_007/screens/orders_screen.dart';
 import 'package:flutter_application_007/screens/product_detail_screen.dart';
 import 'package:flutter_application_007/screens/products_overview_screen.dart';
 import 'package:provider/provider.dart';
-
+import './screens/auth_screen.dart';
 import 'constants/constants.dart';
 
 void main() {
@@ -45,9 +45,10 @@ class MyApp extends StatelessWidget {
           fontFamily: 'QuattrocentoSans',
         ),
         onGenerateRoute: Routes.generateRoutes,
-        initialRoute: '/dashboard',
+        initialRoute: 'auth',
         routes: {
           //   "/": (context) => DashboardScreen(),
+          "auth": (context) => AuthScreen(),
           "ProductDetailScreen": (context) => ProductDetailScreen(),
           "EditProductScreen": (context) => EditProductScreen(),
           //   CartScreen.routeName: (context) => CartScreen(),

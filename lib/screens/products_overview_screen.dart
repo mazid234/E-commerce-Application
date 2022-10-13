@@ -126,8 +126,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                       ),
-                      itemCount: 4,
-                      itemBuilder: (context, index) => buildFoodShimmer(),
+                      itemCount: 6,
+                      itemBuilder: (context, index) => Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24)),
+                          child: buildFoodShimmer()),
                     )
                   : ProductsGrid(_showOnlyFavorite)),
 
@@ -151,7 +154,31 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     );
   }
 
-  Widget buildFoodShimmer() => GridTile(
-        child: ShimmerWidget.rectangular(width: 20, height: 50),
+  Widget buildFoodShimmer() => Stack(
+        alignment: Alignment.topCenter,
+        children: const [
+          Positioned(
+            top: 50,
+            child: GridTile(
+              child: ShimmerWidget.circular(height: 150, width: 150),
+            ),
+          ),
+          Positioned(
+            bottom: 30,
+            right: 42,
+            left: 42,
+            child: GridTileBar(
+              title: ShimmerWidget.rectangular(width: 20, height: 14),
+            ),
+          ),
+          Positioned(
+            bottom: 50,
+            right: 30,
+            left: 30,
+            child: GridTileBar(
+              title: ShimmerWidget.rectangular(width: 20, height: 14),
+            ),
+          )
+        ],
       );
 }
